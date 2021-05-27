@@ -39,11 +39,25 @@ RSpec.describe User, type: :model do
         @user.valid?
         expect(@user.errors.full_messages).to include("Nickname can't be blank")
       end
+      
       it 'emailが空では登録できない' do
         @user.email = ""
         @user.valid?
         expect(@user.errors.full_messages).to include("Email can't be blank")
       end
+      it '重複したemailが存在する場合登録できない' do
+        @user.save
+        another_user = FactoryBot.build(:user)
+        another_user.email = @user.email
+        another_user.valid?
+        expect(another_user.errors.full_messages).to include("Email has already been taken")
+      end
+      it 'emailに@がなければ登録できない' do
+        @user.email = "aaa"
+        @user.valid?
+        expect(@user.errors.full_messages).to include("Email is invalid")
+      end
+
       it 'passwordが空では登録できない' do
         @user.password = ""
         @user.valid?
@@ -54,18 +68,28 @@ RSpec.describe User, type: :model do
         @user.valid?
         expect(@user.errors.full_messages).to include("Password confirmation doesn't match Password")
       end
-      it '重複したemailが存在する場合登録できない' do
-        @user.save
-        another_user = FactoryBot.build(:user)
-        another_user.email = @user.email
-        another_user.valid?
-        expect(another_user.errors.full_messages).to include("Email has already been taken")
-      end
       it 'passwordが5文字以下では登録できない' do
         @user.password = "000oo"
         @user.valid?
         expect(@user.errors.full_messages).to include("Password is too short (minimum is 6 characters)")
       end
+      it 'passwordは英字のみの場合は登録できない' do
+        @user.password = "oooooo"
+        @user.valid?
+        expect(@user.errors.full_messages).to include("Password には英字と数字の両方を含めて設定してください")
+      end 
+      it 'passwordは数字のみの場合は登録できない' do
+        @user.password = "000000"
+        @user.valid?
+        expect(@user.errors.full_messages).to include("Password には英字と数字の両方を含めて設定してください")
+      end
+      it 'passwordは全角では設定できない' do
+        @user.password = "０００ＡＡＡ"
+        @user.password_confirmation = "０００ＡＡＡ"
+        @user.valid?
+        expect(@user.errors.full_messages).to include("Password には英字と数字の両方を含めて設定してください")
+      end
+
       it 'last_nameが空では登録できない' do
         @user.last_name = ""
         @user.valid?
@@ -106,32 +130,14 @@ RSpec.describe User, type: :model do
         @user.valid?
         expect(@user.errors.full_messages).to include("Last name kana Full-width katakana characters")        
       end
-      it 'passwordは英字のみの場合は登録できない' do
-        @user.password = "oooooo"
-        @user.valid?
-        expect(@user.errors.full_messages).to include("Password には英字と数字の両方を含めて設定してください")
-      end 
-      it 'passwordは数字のみの場合は登録できない' do
-        @user.password = "000000"
-        @user.valid?
-        expect(@user.errors.full_messages).to include("Password には英字と数字の両方を含めて設定してください")
-      end
+      
+
       it '生年月日が空では登録できない' do
         @user.birthday = ""
         @user.valid?
         expect(@user.errors.full_messages).to include("Birthday can't be blank")
       end
-      it 'passwordは全角では設定できない' do
-        @user.password = "０００ＡＡＡ"
-        @user.password_confirmation = "０００ＡＡＡ"
-        @user.valid?
-        expect(@user.errors.full_messages).to include("Password には英字と数字の両方を含めて設定してください")
-      end
-      it 'emailに@がなければ登録できない' do
-        @user.email = "aaa"
-        @user.valid?
-        expect(@user.errors.full_messages).to include("Email is invalid")
-      end
+      
     end
   end
 end
