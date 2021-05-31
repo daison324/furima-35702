@@ -14,6 +14,11 @@ RSpec.describe Item, type: :model do
       end
     
       context '商品出品機能がうまくいかないとき' do
+        it 'imageがないと出品できない' do
+          @item.image = nil
+          @item.valid?
+          expect(@item.errors.full_messages).to include("Image can't be blank")
+        end  
         it "titleが空だと登録できない" do
           @item.title = ""
           @item.valid?
@@ -75,7 +80,7 @@ RSpec.describe Item, type: :model do
           expect(@item.errors.full_messages).to include("Price Half-width number")
         end
         it "priceが半角英数字だと登録できない" do 
-          @item.price =  "2a0"
+          @item.price = "2s0"
           @item.valid?
           expect(@item.errors.full_messages).to include("Price Half-width number")
         end

@@ -12,13 +12,14 @@ class Item < ApplicationRecord
   #has_one :order
   #has_many :comments
 
-  #validates :image, presence: true
+  
 
    with_options presence: true do
     validates :title, length: { maximum: 40 }
     validates :text, length: { maximum: 1000 }
     validates :price, numericality: { only_integer: true, message: 'Half-width number'}
     validates_inclusion_of :price, in: 300..9999999, message: 'Out of setting range'
+    validates :image, presence: true
   end
 
   with_options numericality: { other_than: 0 , message: 'Select'} do
