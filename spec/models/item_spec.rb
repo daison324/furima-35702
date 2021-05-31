@@ -75,7 +75,7 @@ RSpec.describe Item, type: :model do
           expect(@item.errors.full_messages).to include("Price Half-width number")
         end
         it "priceが半角英数字だと登録できない" do 
-          @item.price = 345, "abc"
+          @item.price =  "2a0"
           @item.valid?
           expect(@item.errors.full_messages).to include("Price Half-width number")
         end
