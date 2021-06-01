@@ -26,7 +26,7 @@ class Item < ApplicationRecord
     validates :category_id
     validates :state_id
     validates :fee_id
-    validates :prefectures_id
+    validates :prefecture_id
     validates :days_ship_id
   end
 end

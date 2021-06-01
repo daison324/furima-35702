@@ -44,8 +44,8 @@ RSpec.describe Item, type: :model do
           @item.valid?
           expect(@item.errors.full_messages).to include("Fee Select")
         end
-        it "prefectures_idが0だと登録できない" do
-          @item.prefectures_id = 0
+        it "prefecture_idが0だと登録できない" do
+          @item.prefecture_id = 0
           @item.valid?
           expect(@item.errors.full_messages).to include("Prefectures Select")
         end
