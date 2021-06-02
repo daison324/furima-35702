@@ -22,10 +22,6 @@ class OrdersController < ApplicationController
     end
   end
 
-  def pay_item
-    Payjp.api_key = ENV["PAYJP_SECRET_KEY"]
-  end
-
   private
 
     def set_item
