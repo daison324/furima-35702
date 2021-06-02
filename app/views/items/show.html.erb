@@ -1,18 +1,17 @@
 <%= render "shared/header" %>
-
 <%# 商品の概要 %>
 <div class="item-show">
   <div class="item-box">
     <h2 class="name">
       <%= @item.title %>
     </h2>
-    <div class="item-img-content">
+    <div class='item-img-content'>
       <%= image_tag @item.image ,class:"item-box-img" %>
-      <%# 商品が売れている場合は、sold outを表示しましょう %>
-      <div class="sold-out">
+      <% if nil != @item.order %>
+      <div class='sold-out'>
         <span>Sold Out!!</span>
       </div>
-      <%# //商品が売れている場合は、sold outを表示しましょう %>
+      <% end %>
     </div>
     <div class="item-price-box">
       <span class="item-price">
@@ -23,20 +22,22 @@
       </span>
     </div>
 
-
-    <% if user_signed_in? && current_user.id == @item.user.id %>
-
-    <%= link_to "商品の編集", edit_item_path, method: :get, class: "item-red-btn" %>
-    <p class="or-text">or</p>
-    <%= link_to "削除", item_path, method: :delete, class:"item-destroy" %>
-
-    <%# 商品が売れていない場合はこちらを表示しましょう %>
-    <% elsif user_signed_in?%>
-    <%= link_to "購入画面に進む", item_orders_path(@item.id),class:"item-red-btn"%>
+    <% if user_signed_in? && current_user.id == @item.user_id %>
+      <% if @item.order == nil %>
+      <%= link_to '商品の編集', edit_item_path(@item.id), method: :get, class: "item-red-btn" %>
+      <p class='or-text'>or</p>
+      <%= link_to '削除', item_path(@item.id), method: :delete, class:'item-destroy' %>
+      <% end %>
+    <% elsif user_signed_in? %>
+        <% if @item.order == nil %>
+      <%# 商品が売れていない場合はこちらを表示しましょう %>
+         <%= link_to '購入画面に進む', item_orders_path(@item.id), class:"item-red-btn"%>
+        <% end %>
+    <% else %>
     <% end %>
-    <%# //商品が売れていない場合はこちらを表示しましょう %>
-
-
+      <%# //商品が売れていない場合はこちらを表示しましょう %>
+  <%# コメントアウトは振り返りのために残しておきたいです %>
+      <%# //ログインしているユーザーと出品しているユーザーが、同一人物の場合と同一人物ではない場合で、処理を分けましょう %>
 
     <div class="item-explain-box">
       <span><%= @item.text %></span>
@@ -81,30 +82,20 @@
     </div>
   </div>
   <%# /商品の概要 %>
-
+<%# コメント投稿フォーム %>
   <div class="comment-box">
-    <form>
-      <textarea class="comment-text"></textarea>
+    <% if user_signed_in? %>
+    <%= form_with model: @item, local: true do |f|%>
+    <%= render 'shared/error_messages', model: f.object %>
+      <%= f.text_area :text, class: "comment-text" %> 
       <p class="comment-warn">
         相手のことを考え丁寧なコメントを心がけましょう。
         <br>
         不快な言葉遣いなどは利用制限や退会処分となることがあります。
       </p>
-      <button type="submit" class="comment-btn">
-        <%= image_tag "comment.png" ,class:"comment-flag-icon" ,width:"20",height:"25"%>
-        <span>コメントする<span>
-      </button>
-    </form>
+        <%= f.submit "コメントする", class: "comment-btn" %>          
+    <% end %>
+    <% end %>
   </div>
-  <div class="links">
-    <a href="#" class="change-item-btn">
-      ＜ 前の商品
-    </a>
-    <a href="#" class="change-item-btn">
-      後ろの商品 ＞
-    </a>
-  </div>
-  <a href="#" class="another-item"><%= @item.category.name %>をもっと見る</a>
-</div>
 
 <%= render "shared/footer" %>
