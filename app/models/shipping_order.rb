@@ -19,6 +19,5 @@ class ShippingOrder
 
 
 
-  extend ActiveHash::Associations::ActiveRecordExtensions
-  belongs_to :prefecture
+
 end
