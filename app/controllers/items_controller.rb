@@ -2,6 +2,7 @@ class ItemsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
   before_action :set_item, only: [:show, :edit, :update, :destroy]
   before_action :contributor_confirmation, only: [:edit, :update, :destroy]
+  before_action :sold_out_no_view, only:[:edit, :update, :destroy]
 
 
   def index
@@ -48,12 +49,15 @@ class ItemsController < ApplicationController
   end
 
   def item_params
-    params.require(:item).permit(:image, :title, :text, :prefecture_id, :category_id, :fee_id, :state_id, :days_ship_id, :price).merge(user_id: current_user.id)
+    params.require(:item).permit(:image, :title, :text, :category_id, :state_id, :fee_id, :prefecture_id, :days_ship_id, :price).merge(user_id: current_user.id)
+  end
+
+  def sold_out_no_view
+    redirect_to root_path unless @item.order == nil
   end
 
   def contributor_confirmation
-    redirect_to root_path unless @item.user == current_user
+    redirect_to root_path unless current_user == @item.user
   end
-
 
 end
