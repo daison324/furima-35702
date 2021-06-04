@@ -9,9 +9,8 @@ class ShippingOrder
     validates :postal_code,          format:{ with: /\A[0-9]{3}-[0-9]{4}\z/, message: "is invalid. Include hyphen(-)" }            #郵便番号
     validates :municipality #市区町村
     validates :address #番地
-    validates :phone_number,   numericality:{ only_integer: true,            message: "is invalid. Input half-width characters." } #電話番号
-      validates :phone_number, length: { in:1..11, message: "Must be 11 characters or less" }
-  end
+    validates :phone_number,   numericality:{ only_integer: true,            message: "is invalid. Input half-width characters." }, length: { in:1..11, message: "Must be 11 characters or less" }
+  end　#電話番号
   validates :prefecture_id, numericality: { other_than: 0, message: "Select" } #都道府県
     
 
